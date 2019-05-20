@@ -326,14 +326,12 @@ def main():
     main_filename = r"C:\workspace\NarraguagusRiver_CherryfieldME\Handoff\WSPRO\cherryfield"
     geo_main = ParseWSPRO(main_filename)
     
-#    xs_num = sum(isinstance(item, CrossSection) for item in geo_west.geo_list)
-#    west_xs_ltr = [chr(i+65) for i in range(0,xs_num)]
 #    
 #    east_branch_book = pd.ExcelWriter(r"C:\workspace\Narraguagus_River\GIS\analysis\Narraguagus_River_East_Branch.xlsx")
 #    west_branch_book = pd.ExcelWriter(r"C:\workspace\Narraguagus_River\GIS\analysis\Narraguagus_River_West_Branch.xlsx")
     main_branch_book = pd.ExcelWriter(r"C:\workspace\Narraguagus_River\GIS\analysis\Narraguagus_River_Mainstem.xlsx")
     
-    bridge_list = [item for item in geo_main.geo_list if isinstance(item, Bridge)]
+    #bridge_list = [item for item in geo_main.geo_list if isinstance(item, Bridge)]
     
     for item in geo_main.geo_list:
         if isinstance(item, CrossSection):
@@ -345,20 +343,9 @@ def main():
             pd.DataFrame(item.points, columns=['Station','Elevation']).to_excel(main_branch_book, sheet_name=sht_name,index=False,
                         startrow=14)
             pd.DataFrame.from_dict(bridge_data(item), orient='index').to_excel(main_branch_book, sheet_name=sht_name)
-
-
-meta_data = {'Station':item.name,
-'Low Chord':item.low_chord,
-'N Val':item.n_val,
-'Bridge Type':item.bridge_type,
-'Bridge Width':item.bridge_width,
-'Embankment Slope':item.embank_slope,
-'Embankment Elevation':item.embank_elev,
-'Wing Wall Angle':item.ww_angle,
-'Wing Wall Width':item.ww_width,
-'Entrance Radius': item.ent_radius,
-'Pier Elevation':item.pier_elev,
-'Pier Width':item.pier_width}
+        elif isinstance(item, Approach_CrossSetion):
+            print(item.name)
+            pd.DataFrame(item.points, columns=['Station','Elevation']).to_excel(main_branch_book, sheet_name=item.name,index=False)
 
 #    for item in geo_west.geo_list:
 #        if isinstance(item, CrossSection):
@@ -370,6 +357,7 @@ meta_data = {'Station':item.name,
 #            print(item.name)
 #            pd.DataFrame(item.points, columns=['Station','Elevation']).to_excel(east_branch_book, sheet_name=item.name,index=False)
 #
+    main_branch_book.save()
 #    west_branch_book.save()
 #    east_branch_book.save()
     
